@@ -1,8 +1,11 @@
 ﻿using BeezupAPI.Models;
+using CsvHelper;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Web;
 using System.Xml.Serialization;
 
@@ -10,28 +13,49 @@ namespace BeezupAPI
 {
     public static class Serialiazer
     {
-        public static void JsonSerialize(List<Values> vals)
+        public static string JsonSerialize(List<Values> vals)
         {
             JsonSerializerSettings jsonSerializer = new JsonSerializerSettings();
             jsonSerializer.NullValueHandling = NullValueHandling.Ignore;
-            Console.WriteLine(JsonConvert.SerializeObject(vals, jsonSerializer));
+            return JsonConvert.SerializeObject(vals, jsonSerializer);
         }
 
-        public static void TextSerialize(List<Values> vals)
+        public static string TextSerialize(List<Values> vals)
         {
-            
+            StringBuilder stringBuilder = new StringBuilder();
             foreach (Values values in vals)
             {
-                Console.WriteLine(values.ToString());
+                stringBuilder.AppendLine(values.ToString());
+            }
+
+            return stringBuilder.ToString();
+        }
+
+        public static string XMLSerialize(List<Values> vals)
+        {
+            XmlSerializer xMLSerialize = new XmlSerializer(typeof(List<Values>));
+            using (StringWriter textWriter = new StringWriter())
+            {
+                xMLSerialize.Serialize(textWriter, vals);
+                return textWriter.ToString();
             }
         }
 
-        public static void XMLSerialize(List<Values> vals)
+        public static string CSVSerialize(List<Values> vals)
         {
-            XmlSerializer xMLSerialize = new XmlSerializer(typeof(List<Values>));
-            xMLSerialize.Serialize(Console.Out, vals);
-            Console.WriteLine();
-            Console.ReadLine();
+            String result = String.Empty;
+            using (MemoryStream memoryStream = new MemoryStream())
+            using (StreamWriter writer = new StreamWriter(memoryStream))
+            using (CsvWriter csvWriter = new CsvWriter(writer))
+            {
+
+                csvWriter.WriteHeader<Values>();
+                csvWriter.WriteRecords(vals);
+
+                writer.Flush();
+                result = Encoding.UTF8.GetString(memoryStream.ToArray());
+            }
+            return result;
         }
     }
 }

@@ -10,5 +10,6 @@ namespace BeezupAPI
         public string csvUri { get; set; }
         public int? take { get; set; }
         public int? skip { get; set; }
+        public string type { get; set; }
     }
 }

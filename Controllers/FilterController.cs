@@ -32,12 +32,9 @@ namespace BeezupAPI.Controllers
         {
             if (model.skip == null) model.skip = 1;
             if (model.take == null) model.take = 20;
-            
-            List<Values> vals = this._filterManager.step2(model.csvUri)
-                .Skip(model.skip.Value)
-                .Take(model.take.Value)
-                .ToList();
-            return Ok(vals);
+            if (model.type == null) model.type = "text";
+
+            return Ok(this._filterManager.step3(model.type, model.csvUri, model.skip, model.take));
         }
 
         [HttpPost]

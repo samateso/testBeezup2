@@ -60,23 +60,28 @@ namespace BeezupAPI
             return vals;
         }
 
-        public void step3(string type, string path)
+        public string step3(string type, string path, int? take, int? skip)
         {
+            string result = String.Empty;
             switch (type)
             {
                 case "json":
-                    Serialiazer.JsonSerialize(step2(path));
+                    result = Serialiazer.JsonSerialize(step2(path).Skip(skip.Value).Take(take.Value).ToList());
                     break;
                 case "text":
-                    Serialiazer.TextSerialize(step2(path));
+                    result = Serialiazer.TextSerialize(step2(path).Skip(skip.Value).Take(take.Value).ToList());
                     break;
                 case "xml":
-                    Serialiazer.XMLSerialize(step2(path));
+                    result = Serialiazer.XMLSerialize(step2(path).Skip(skip.Value).Take(take.Value).ToList());
+                    break;
+                case "csv":
+                    result = Serialiazer.CSVSerialize(step2(path).Skip(skip.Value).Take(take.Value).ToList());
                     break;
                 default:
-                    Serialiazer.JsonSerialize(step2(path));
+                    result = Serialiazer.JsonSerialize(step2(path).Skip(skip.Value).Take(take.Value).ToList());
                     break;
             }
+            return result;
         }
     }
 }

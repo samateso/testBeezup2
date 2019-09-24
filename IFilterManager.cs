@@ -10,6 +10,6 @@ namespace BeezupAPI
     public interface IFilterManager
     {
         List<Values> step2(string path);
-        void step3(string type, string path);
+        string step3(string type, string path, int? take, int? skip);
     }
 }
